@@ -6,6 +6,20 @@ import java.util.List;
 public class Main {
 
     public static void main (String [] args){
+        ArrayList<String> palabrasClave = new ArrayList<>();
+        palabrasClave.add("ATOM");
+        palabrasClave.add("LIST");
+        palabrasClave.add("EQUAL");
+        palabrasClave.add("<");
+        palabrasClave.add(">");
+        palabrasClave.add("+");
+        palabrasClave.add("-");
+        palabrasClave.add("*");
+        palabrasClave.add("/");
+        palabrasClave.add("DEFUN");
+        palabrasClave.add("COND");
+
+
         ArrayList<Double> numeros = new ArrayList<>();
         String operador = "";
 
