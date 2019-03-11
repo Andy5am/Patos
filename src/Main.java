@@ -19,24 +19,25 @@ public class Main {
         palabrasClave.add("DEFUN");
         palabrasClave.add("COND");
 
-
         ArrayList<Double> numeros = new ArrayList<>();
         String operador = "";
-
-        String linea = "(+ 5(* 3 2)2(/ 8 1))";
+        String linea = "(defun hola(+ 5(* 3 2)2(/ 8 1)))";
         String simple = "(- 5 3)";
         String [] v = linea.split("");
+
         for (int i = 0; i<v.length;i++){
             System.out.print(v[i]+",");
         }
         try{
-            System.out.println("La respuesta es: "+evaluarParentesis(v)[0]);
+            System.out.println("La respuesta es: "+ evaluarParentesis(convertir(split(linea)))[0]);
         }catch(ArithmeticException e){
             System.out.println("Hay una division entre 0... ERROR MATEMATICO");
         }
 
         //Suponemos que todos los numeros son menores que 10
         String[] values = linea.split("");
+
+
 
     }
 
@@ -119,4 +120,42 @@ public class Main {
         }
         return l;
     }
+
+    private static ArrayList<String > split (String s){
+        ArrayList<String> str = new ArrayList<>();
+        String[] matriz = s.split("");
+        //for (int i = 0 ; i< s.length(); i++)
+        for(int i = 0; i<s.length();i++){
+
+            if (matriz[i].equals("(") ||matriz[i].equals(")") ||matriz[i].equals("+") ||matriz[i].equals("-") ||matriz[i].equals("*") ||matriz[i].equals("/")){
+                str.add(matriz[i]);
+            }else {
+                Boolean continuar = true;
+                String st = "";
+                int contador = 0;
+                while (continuar){
+                    st += matriz[contador+i];
+                    contador++;
+                    if (matriz[contador+i].equals("(") ||matriz[contador+i].equals(")") ||matriz[contador+i].equals("+") ||matriz[contador+i].equals("-") ||matriz[contador+i].equals("*") ||matriz[contador+i].equals("/") ||matriz[contador+i].equals(" ")){
+                        continuar = false;
+                    }
+                }
+                str.add(st);
+                i+=contador-1;
+            }
+
+        }
+        return str;
+    }
+
+    private static String[] convertir (ArrayList<String > vals){
+        String st = "";
+        for (int a = 0; a<vals.size(); a++){
+            st+= vals.get(a)+",";
+        }
+        String [] values = st.split(",");
+
+        return values;
+    }
+
 }
