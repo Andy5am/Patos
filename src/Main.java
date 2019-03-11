@@ -158,4 +158,61 @@ public class Main {
         return values;
     }
 
+    public static String evaluarPredicados(String[] matriz){
+        int i = 1;
+        while(!matriz[i].equals(")")){
+            switch (matriz[i].toUpperCase()) {
+                case "ATOM":
+                    if (!matriz[i+1].equals("(") || matriz[i+1].equals("nil")){
+                        return "T";
+                    }else{
+                        return "nil";
+                    }
+                case "LIST":
+                    if (matriz[i+1].equals("(")){
+                        return "T";
+                    }else{
+                        return "nil";
+                    }
+                case "EQUAL":
+                    try{
+                        if (matriz[i+1].equals(matriz[i+2])){
+                            return "T";
+                        }else{
+                            return "nil";
+                        }
+                    }catch(Exception e){
+                        return "nil";
+                    }
+                case "<":
+                    try{
+                        double n1 = Double.parseDouble(matriz[i+1]);
+                        double n2 = Double.parseDouble(matriz[i+2]);
+                        if(n1<n2){
+                            return "T";
+                        }else{
+                            return "nil";
+                        }
+                    }catch(Exception e){
+                        return "nil";
+                    }
+                case ">":
+                    try{
+                        double n1 = Double.parseDouble(matriz[i+1]);
+                        double n2 = Double.parseDouble(matriz[i+2]);
+                        if(n1>n2){
+                            return "T";
+                        }else{
+                            return "nil";
+                        }
+                    }catch(Exception e){
+                        return "nil";
+                    }
+                default:
+                    return"Ningun predicado dado";
+            }
+        }
+        return str;
+    }
+
 }
