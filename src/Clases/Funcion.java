@@ -13,4 +13,17 @@ public class Funcion {
         parametros = param;
         instrucciones = inst;
     }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    @Override
+    public String toString() {
+        return "Funcion{" +
+                "nombre='" + nombre + '\'' +
+                ", parametros=" + parametros +
+                ", instrucciones=" + instrucciones +
+                '}';
+    }
 }

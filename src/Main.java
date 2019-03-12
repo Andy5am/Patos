@@ -1,6 +1,9 @@
 
+import Clases.Funcion;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Main {
@@ -20,25 +23,70 @@ public class Main {
         palabrasClave.add("COND");
 
         ArrayList<Double> numeros = new ArrayList<>();
+        HashMap funciones = new HashMap();
         String operador = "";
-        String linea = "(defun hola(+ 5(* 3 2)2(/ 8 1)))";
+        String linea = "(DEFUN hola(x y)(+ x y))";
         String simple = "(- 5 3)";
         String [] v = linea.split("");
+        System.out.println(v[6]);
 
-        for (int i = 0; i<v.length;i++){
+        /*for (int i = 0; i<v.length;i++){
             System.out.print(v[i]+",");
         }
         try{
             System.out.println("La respuesta es: "+ evaluarParentesis(convertir(split(linea)))[0]);
         }catch(ArithmeticException e){
             System.out.println("Hay una division entre 0... ERROR MATEMATICO");
-        }
+        }*/
 
         //Suponemos que todos los numeros son menores que 10
         String[] values = linea.split("");
+        System.out.println(split(linea));
+        definirFuncion(split(linea),funciones);
+        System.out.println(funciones);
+        ArrayList car = split(linea);
+        if (car.get(3).equals("hola")){
+            System.out.println("True");
+        }else {
+            System.out.println("false");
+        }
 
 
 
+    }
+
+    public static void definirFuncion (ArrayList<String> codigo, HashMap funciones){
+        int parentesis = 0;
+        int parCerrado = 0;
+        String nombre = "";
+        ArrayList<String > parametros = new ArrayList();
+        ArrayList<String> instrucciones = new ArrayList();
+        for (int i = 0; i < codigo.size(); i++){
+            if (codigo.get(i).equals("DEFUN")){
+                nombre = codigo.get(i+1);
+                 String[] name = nombre.split(" ");
+                nombre= name[1];
+            }else if (codigo.get(i).equals("(")){
+                parentesis++;
+                if (parentesis==2){
+                    while (!codigo.get(i).equals(")")){
+                        if (!codigo.get(i).equals("(")) {
+                            parametros.add(codigo.get(i));
+                            i++;
+                        }else {
+                            i++;
+                        }
+                    }
+                    parCerrado++;
+                }
+            }else if (parCerrado==1){
+                while (!codigo.get(i).equals(")")){
+                    instrucciones.add(codigo.get(i));
+                    i++;
+                }
+            }
+        }
+        funciones.put(nombre, new Funcion(nombre,parametros,instrucciones));
     }
 
     private static double[] evaluarParentesis(String [] values){
@@ -123,6 +171,7 @@ public class Main {
 
     private static ArrayList<String > split (String s){
         ArrayList<String> str = new ArrayList<>();
+        s.toUpperCase();
         String[] matriz = s.split("");
         //for (int i = 0 ; i< s.length(); i++)
         for(int i = 0; i<s.length();i++){
@@ -160,6 +209,7 @@ public class Main {
 
     public static String evaluarPredicados(String[] matriz){
         int i = 1;
+        String str = "";
         while(!matriz[i].equals(")")){
             switch (matriz[i].toUpperCase()) {
                 case "ATOM":
