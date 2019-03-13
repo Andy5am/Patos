@@ -22,7 +22,6 @@ public class Main {
         palabrasClave.add("DEFUN");
         palabrasClave.add("COND");
 
-        ArrayList<Double> numeros = new ArrayList<>();
         HashMap funciones = new HashMap();
         String operador = "";
         String linea = "(DEFUN hola(x y)(+ x y))";
@@ -50,9 +49,6 @@ public class Main {
         }else {
             System.out.println("false");
         }
-
-
-
     }
 
     public static void definirFuncion (ArrayList<String> codigo, HashMap funciones){
@@ -64,8 +60,8 @@ public class Main {
         for (int i = 0; i < codigo.size(); i++){
             if (codigo.get(i).equals("DEFUN")){
                 nombre = codigo.get(i+1);
-                 String[] name = nombre.split(" ");
-                nombre= name[1];
+                 //String[] name = nombre.split(" ");
+                //nombre= name[1];
             }else if (codigo.get(i).equals("(")){
                 parentesis++;
                 if (parentesis==2){
@@ -89,12 +85,16 @@ public class Main {
         funciones.put(nombre, new Funcion(nombre,parametros,instrucciones));
     }
 
+    /**
+     * @param values Es la matriz que contiene los elementos dentro del parentesis
+     * @return En la primera posicion, el resultado de la operacion aritmetica. En el segundo, el contador interno
+     */
     private static double[] evaluarParentesis(String [] values){
         String op = "";
         ArrayList<Double> val = new ArrayList<>();
         double r = 0;
         int contador = 1;
-        while (!values [contador].equals(")")){
+        while (!values [contador].equals(")")) {
             if (esNum(values[contador])){
                 val.add(Double.parseDouble(values[contador]));
             }else if (values[contador].equals("+") || values[contador].equals("-") || values[contador].equals("*") || values[contador].equals("/")){
@@ -105,7 +105,7 @@ public class Main {
                     val0[c-(contador)] = values[c];
                 }
                 double respuesta[] = evaluarParentesis(val0);
-                System.out.println(respuesta[0]);
+                //System.out.println(respuesta[0]);
                 val.add(respuesta[0]);
                 contador = (int) respuesta[1]+contador;
             }
@@ -178,7 +178,7 @@ public class Main {
 
             if (matriz[i].equals("(") ||matriz[i].equals(")") ||matriz[i].equals("+") ||matriz[i].equals("-") ||matriz[i].equals("*") ||matriz[i].equals("/")){
                 str.add(matriz[i]);
-            }else {
+            }else if(!matriz[i].equals(" ")){
                 Boolean continuar = true;
                 String st = "";
                 int contador = 0;
@@ -196,8 +196,7 @@ public class Main {
         }
         return str;
     }
-
-    private static String[] convertir (ArrayList<String > vals){
+    private static String[] convertir (ArrayList<String> vals){
         String st = "";
         for (int a = 0; a<vals.size(); a++){
             st+= vals.get(a)+",";
@@ -207,7 +206,16 @@ public class Main {
         return values;
     }
 
-    public static String evaluarPredicados(String[] matriz){
+    public static boolean estaEnLista(String a, List<String> lista){
+        for (int i = 0;i<lista.size();i++){
+            if (lista.get(i).equals(a)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String evaluarPredicados(String[] matriz, List<String> palabrasClave){
         int i = 1;
         String str = "";
         while(!matriz[i].equals(")")){
@@ -215,11 +223,15 @@ public class Main {
                 case "ATOM":
                     if (!matriz[i+1].equals("(") || matriz[i+1].equals("nil")){
                         return "T";
+                    }else if(matriz[i+1].equals("(") && estaEnLista(matriz[i+2], palabrasClave) && !matriz[i+2].equals("DEFUN") && !matriz[i+2].equals("COND")){
+                        return "T";
                     }else{
                         return "nil";
                     }
                 case "LIST":
-                    if (matriz[i+1].equals("(")){
+                    if (matriz[i+1].equals("(") && matriz[i+2].equals("'")){
+                        return "T";
+                    }else if(matriz[i+1].equals("'")){
                         return "T";
                     }else{
                         return "nil";
@@ -264,5 +276,4 @@ public class Main {
         }
         return str;
     }
-
 }
