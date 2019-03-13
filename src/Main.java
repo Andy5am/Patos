@@ -22,7 +22,7 @@ public class Main {
         palabrasClave.add("DEFUN");
         palabrasClave.add("COND");
 
-        HashMap funciones = new HashMap();
+        HashMap funciones = new HashMap();/**
         String operador = "";
         String linea = "(DEFUN hola(x y)(+ x y))";
         String simple = "(- 5 3)";
@@ -36,8 +36,7 @@ public class Main {
             System.out.println("La respuesta es: "+ evaluarParentesis(convertir(split(linea)))[0]);
         }catch(ArithmeticException e){
             System.out.println("Hay una division entre 0... ERROR MATEMATICO");
-        }*/
-
+        }
         //Suponemos que todos los numeros son menores que 10
         String[] values = linea.split("");
         System.out.println(split(linea));
@@ -48,7 +47,16 @@ public class Main {
             System.out.println("True");
         }else {
             System.out.println("false");
+        }**/
+
+        String prueba = "(aToM '(+ 5 1))";
+        ArrayList prueba0 =split(prueba);
+        String[] mero = convertir(prueba0);
+        System.out.println(prueba);
+        for (int i = 0;i<mero.length;i++){
+            System.out.print(mero[i]+",");
         }
+        System.out.println(evaluarPredicados(mero,palabrasClave));
     }
 
     public static void definirFuncion (ArrayList<String> codigo, HashMap funciones){
@@ -221,11 +229,15 @@ public class Main {
         while(!matriz[i].equals(")")){
             switch (matriz[i].toUpperCase()) {
                 case "ATOM":
-                    if (!matriz[i+1].equals("(") || matriz[i+1].equals("nil")){
+                    if (matriz[i+1].equals("(")){
+                        return "nil";
+                    }else if(matriz[i+1].toUpperCase().equals("NIL")){
                         return "T";
+                    }else if (matriz[i+1].equals("'")){
+                        return "nil";
                     }else if(matriz[i+1].equals("(") && estaEnLista(matriz[i+2], palabrasClave) && !matriz[i+2].equals("DEFUN") && !matriz[i+2].equals("COND")){
                         return "T";
-                    }else{
+                    }else {
                         return "nil";
                     }
                 case "LIST":
