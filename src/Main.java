@@ -22,36 +22,14 @@ public class Main {
         palabrasClave.add("DEFUN");
         palabrasClave.add("COND");
 
-        HashMap funciones = new HashMap();/**
-        String operador = "";
-        String linea = "(DEFUN hola(x y)(+ x y))";
-        String simple = "(- 5 3)";
-        String [] v = linea.split("");
-        System.out.println(v[6]);
-
-        /*for (int i = 0; i<v.length;i++){
-            System.out.print(v[i]+",");
-        }
-        try{
-            System.out.println("La respuesta es: "+ evaluarParentesis(convertir(split(linea)))[0]);
-        }catch(ArithmeticException e){
-            System.out.println("Hay una division entre 0... ERROR MATEMATICO");
-        }
-        //Suponemos que todos los numeros son menores que 10
-        String[] values = linea.split("");
+        HashMap funciones = new HashMap<String, Funcion>();
+        String linea = "(DEFUN hola(x y)(+ x (/ y 5)))";
         System.out.println(split(linea));
-        definirFuncion(split(linea),funciones);
+        defun(split(linea),funciones);
         System.out.println(funciones);
         ArrayList car = split(linea);
-        if (car.get(3).equals("hola")){
-            System.out.println("True");
-        }else {
-            System.out.println("false");
-        }**/
 
-        //predicado no funciona con el atom
-
-
+/**
         String prueba = "(atom (+ 1 2))";
         ArrayList prueba0 =split(prueba);
         String[] mero = convertir(prueba0);
@@ -59,7 +37,36 @@ public class Main {
         for (int i = 0;i<mero.length;i++){
             System.out.print(mero[i]+",");
         }
-        System.out.println(evaluarPredicados(mero,palabrasClave));
+        System.out.println(evaluarPredicados(mero,palabrasClave));**/
+    }
+
+    //Recibe de parametro un arraylist desde el (DEFUN...)
+    public static void defun (ArrayList<String> lista, HashMap<String, Funcion> funciones){
+        int parentesis = 0;
+        int c = 0;
+        Funcion f = new Funcion();
+        while (!lista.get(c).equals(")")){
+            if (lista.get(c).equals("(")){
+                parentesis++;
+            }else if (parentesis == 1 && !lista.get(c).toUpperCase().equals("DEFUN") && !lista.get(c).toUpperCase().equals(")")){
+                f.setNombre(lista.get(c));
+            }else if(parentesis == 2 && !lista.get(c).equals(")")){
+                while (!lista.get(c).equals(")")){
+                    f.addParam(lista.get(c));
+                    c++;
+                }
+            }else if (parentesis>2){
+                f.addInst("(");
+                int a = 0;
+                for (int i =c;i<lista.size()-1;i++){
+                    f.addInst(lista.get(i));
+                    a++;
+                }
+                c = c + a - 1;
+            }
+            c++;
+        }
+        funciones.put(f.getNombre(), f);
     }
 
     public static void definirFuncion (ArrayList<String> codigo, HashMap funciones){
@@ -71,8 +78,6 @@ public class Main {
         for (int i = 0; i < codigo.size(); i++){
             if (codigo.get(i).equals("DEFUN")){
                 nombre = codigo.get(i+1);
-                 //String[] name = nombre.split(" ");
-                //nombre= name[1];
             }else if (codigo.get(i).equals("(")){
                 parentesis++;
                 if (parentesis==2){

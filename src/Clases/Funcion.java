@@ -14,10 +14,27 @@ public class Funcion {
         instrucciones = inst;
     }
 
+    public Funcion(){
+        nombre = "";
+        parametros = new ArrayList<>();
+        instrucciones = new ArrayList<>();
+    }
+
     public String getNombre() {
         return nombre;
     }
 
+    public void setNombre(String nombre){
+        this.nombre = nombre;
+    }
+
+    public void addParam (String param){
+        parametros.add(param);
+    }
+
+    public void addInst(String i){
+        instrucciones.add(i);
+    }
     @Override
     public String toString() {
         return "Funcion{" +
