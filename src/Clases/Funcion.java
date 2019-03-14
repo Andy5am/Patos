@@ -49,7 +49,6 @@ public class Funcion {
         }else{
             System.out.println("ERROR - Demasiados argumentos para la funcion '"+nombre+"'");
         }
-
     }
 
     public void addInst(String i){
