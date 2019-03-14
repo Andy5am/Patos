@@ -49,7 +49,10 @@ public class Main {
             System.out.println("false");
         }**/
 
-        String prueba = "(aToM '(+ 5 1))";
+        //predicado no funciona con el atom
+
+
+        String prueba = "(atom (+ 1 2))";
         ArrayList prueba0 =split(prueba);
         String[] mero = convertir(prueba0);
         System.out.println(prueba);
@@ -229,16 +232,18 @@ public class Main {
         while(!matriz[i].equals(")")){
             switch (matriz[i].toUpperCase()) {
                 case "ATOM":
-                    if (matriz[i+1].equals("(")){
-                        return "nil";
-                    }else if(matriz[i+1].toUpperCase().equals("NIL")){
-                        return "T";
-                    }else if (matriz[i+1].equals("'")){
-                        return "nil";
-                    }else if(matriz[i+1].equals("(") && estaEnLista(matriz[i+2], palabrasClave) && !matriz[i+2].equals("DEFUN") && !matriz[i+2].equals("COND")){
-                        return "T";
+                    if (!matriz[i+2].equals(")")){
+                        if (matriz[i+2].equals("+")||matriz[i+2].equals("-")||matriz[i+2].equals("*")||matriz[i+2].equals("/")){
+                            return "T";
+                        }else {
+                            return "Nil";
+                        }
+                    }else if (matriz[i+1].equals("(")){
+                        if (matriz[i+2].equals("DEFUN")||matriz[i+2].equals("COND")||matriz[i+2].equals("LIST")){
+                            return "Nil";
+                        }
                     }else {
-                        return "nil";
+                        return "T";
                     }
                 case "LIST":
                     if (matriz[i+1].equals("(") && matriz[i+2].equals("'")){

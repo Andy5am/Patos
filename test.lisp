@@ -26,7 +26,7 @@
             (/ puntos 2) ; divido entre dos porque no van a terminar
             7 ; sumado el tiempo en dias que les queda a partir del viernes
         )
-        (queTanBienLeCaigoADiego "Juanito") ; multiplicado por que tan bien me caen
+        (queTanBienLeCaigoADiego("Juanito") ; multiplicado por que tan bien me caen
     )
 )
 (ATOM (LIST 1 2 3 4 5)) ; prueba si la lista es un atom, devuelve NIL
