@@ -27,7 +27,15 @@ public class Main {
         System.out.println(split(linea));
         defun(split(linea),funciones);
         System.out.println(funciones);
-        ArrayList car = split(linea);
+        ArrayList<String> p = new ArrayList();
+        p.add("5");
+        p.add("6");
+        //p.add("5");
+        Funcion f0 = ((Funcion) funciones.get("hola"));
+        f0.initParam(p);
+
+        System.out.println(funciones);
+
 
 /**
         String prueba = "(atom (+ 1 2))";
