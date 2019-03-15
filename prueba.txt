@@ -1,0 +1,6 @@
+(DEFUN hola (x y)(+ x y))
+(DEFUN slu2 (x y)(/ x y))
+(DEFUN prueba (x y)(+ (hola(x y)) (slu2(x y))))
+
+
+(prueba(2 1))

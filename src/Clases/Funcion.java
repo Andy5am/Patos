@@ -29,6 +29,9 @@ public class Funcion {
         return nombre;
     }
 
+    public ArrayList<String> getInst(){
+        return instrucciones;
+    }
     public void setNombre(String nombre){
         this.nombre = nombre;
     }
@@ -74,12 +77,5 @@ public class Funcion {
                 ", parametros=" + parametros +
                 ", instrucciones=" + instrucciones +
                 '}';
-    }
-
-    //TODO
-    public String execute () {
-        String str = "";
-            //Aqui deberia de meter al codigo del main completo
-        return str;
     }
 }
