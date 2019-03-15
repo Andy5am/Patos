@@ -21,31 +21,22 @@ public class Main {
         palabrasClave.add("/");
         palabrasClave.add("DEFUN");
         palabrasClave.add("COND");
-
         HashMap funciones = new HashMap<String, Funcion>();
+
         String linea = "(DEFUN hola(x y)(+ x (/ y 5)))";
-        System.out.println(split(linea));
         defun(split(linea),funciones);
-        System.out.println(funciones);
         ArrayList<String> p = new ArrayList();
         p.add("5");
         p.add("6");
-        //p.add("5");
         Funcion f0 = ((Funcion) funciones.get("hola"));
-        f0.initParam(p);
-
-        System.out.println(funciones);
-
-
-/**
-        String prueba = "(atom (+ 1 2))";
-        ArrayList prueba0 =split(prueba);
-        String[] mero = convertir(prueba0);
-        System.out.println(prueba);
-        for (int i = 0;i<mero.length;i++){
-            System.out.print(mero[i]+",");
+        if (f0.initParam(p)){
+            f0.replaceParams();
+            System.out.println(funciones);
         }
-        System.out.println(evaluarPredicados(mero,palabrasClave));**/
+    }
+
+    public void execute(){
+
     }
 
     //Recibe de parametro un arraylist desde el (DEFUN...)
@@ -77,7 +68,7 @@ public class Main {
         funciones.put(f.getNombre(), f);
     }
 
-    public static void definirFuncion (ArrayList<String> codigo, HashMap funciones){
+    /**public static void definirFuncion (ArrayList<String> codigo, HashMap funciones){
         int parentesis = 0;
         int parCerrado = 0;
         String nombre = "";
@@ -107,7 +98,7 @@ public class Main {
             }
         }
         funciones.put(nombre, new Funcion(nombre,parametros,instrucciones));
-    }
+    }**/
 
     /**
      * @param values Es la matriz que contiene los elementos dentro del parentesis
@@ -185,14 +176,6 @@ public class Main {
         return res;
     }
 
-    private static List<String> arrayToList(String [] a){
-        List<String> l = new ArrayList<String>();
-        for (int i = 0; i< a.length; i++){
-            l.add(a[i]);
-        }
-        return l;
-    }
-
     private static ArrayList<String > split (String s){
         ArrayList<String> str = new ArrayList<>();
         s.toUpperCase();
@@ -200,7 +183,7 @@ public class Main {
         //for (int i = 0 ; i< s.length(); i++)
         for(int i = 0; i<s.length();i++){
 
-            if (matriz[i].equals("(") ||matriz[i].equals(")") ||matriz[i].equals("+") ||matriz[i].equals("-") ||matriz[i].equals("*") ||matriz[i].equals("/")){
+            if (matriz[i].equals("'") || matriz[i].equals("(") ||matriz[i].equals(")") ||matriz[i].equals("+") ||matriz[i].equals("-") ||matriz[i].equals("*") ||matriz[i].equals("/")){
                 str.add(matriz[i]);
             }else if(!matriz[i].equals(" ")){
                 Boolean continuar = true;
@@ -220,6 +203,7 @@ public class Main {
         }
         return str;
     }
+
     private static String[] convertir (ArrayList<String> vals){
         String st = "";
         for (int a = 0; a<vals.size(); a++){
@@ -228,15 +212,6 @@ public class Main {
         String [] values = st.split(",");
 
         return values;
-    }
-
-    public static boolean estaEnLista(String a, List<String> lista){
-        for (int i = 0;i<lista.size();i++){
-            if (lista.get(i).equals(a)){
-                return true;
-            }
-        }
-        return false;
     }
 
     public static String evaluarPredicados(String[] matriz, List<String> palabrasClave){
@@ -306,4 +281,5 @@ public class Main {
         }
         return str;
     }
+
 }

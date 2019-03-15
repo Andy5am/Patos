@@ -37,17 +37,30 @@ public class Funcion {
         parametros.put(param,"");
     }
 
-    public void initParam(ArrayList<String> params){
+    public boolean initParam(ArrayList<String> params){
         int contador = 0;
         if (params.size() == parametros.size()) {
             for (String a : parametros.keySet()){
                 parametros.put(a,params.get(contador));
                 contador++;
             }
+            return true;
         }else if(params.size()<parametros.size()){
             System.out.println("ERROR - Falta de argumentos para la funcion '"+nombre+"'");
+            return false;
         }else{
             System.out.println("ERROR - Demasiados argumentos para la funcion '"+nombre+"'");
+            return false;
+        }
+    }
+
+    public void replaceParams(){
+        for (int i = 0; i<instrucciones.size();i++){
+            String a = instrucciones.get(i);
+            if  (parametros.keySet().contains(a)){
+                instrucciones.set(i,parametros.get(a));
+            }
+
         }
     }
 
@@ -66,7 +79,7 @@ public class Funcion {
     //TODO
     public String execute () {
         String str = "";
-
+            //Aqui deberia de meter al codigo del main completo
         return str;
     }
 }
