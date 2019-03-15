@@ -1,6 +1,17 @@
 (DEFUN hola (x y)(+ x y))
 (DEFUN slu2 (x y)(/ x y))
-(DEFUN prueba (x y)(+ (hola(x y)) (slu2(x y))))
+(DEFUN prueba (x y)(+ (hola (x y)) (slu2 (x y))))
 
+(DEFUN factorial (num)
+    (*
+        (COND
+            ((= num 1) 1)
+            ((ATOM 1) (factorial (- num 1)))
+        )
+        num
+    )
+)
 
-(prueba(2 1))
+(hola ( 1 2))
+(slu2( 1 2))
+(prueba (1 2) )

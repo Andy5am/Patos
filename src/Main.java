@@ -1,4 +1,3 @@
-
 import Clases.Funcion;
 
 import java.io.BufferedReader;
@@ -77,6 +76,7 @@ public class Main {
      * @param funciones Es el hashmap de Funciones del programa
      * @param operaciones  Es un ArrayList
      * Cada instruccion es del tipo (ALGO ASDKCI HOLA SALU2 (/ 5 9) HAHA)
+     * No permite que le manden operaciones o funciones de parametros a las llamadas de funciones
      */
     public static void executeFun(ArrayList<ArrayList<String>> operaciones, HashMap<String, Funcion> funciones){
         ArrayList<String> operadoresA = new ArrayList<>();
@@ -96,7 +96,6 @@ public class Main {
             }
         }
 
-        System.out.println(funciones);
 
         for (int i = 0; i<operaciones.size();i++){
             //Busca de operadores
@@ -117,7 +116,6 @@ public class Main {
             }
             //Busqueda de llamadas de funciones
             else if (funciones.keySet().contains(operaciones.get(i).get(1))){
-                System.out.println("Encontramos una funcion en "+ (i+1));
                 Funcion f = funciones.get(operaciones.get(i).get(1));
                 ArrayList<String> params = new ArrayList<>();
                 int j = 3;
@@ -127,7 +125,6 @@ public class Main {
                 }
                 if (f.initParam(params)){
                     f.replaceParams();
-                    //System.out.println(evaluarParentesis(convertir(f.getInst()), funciones)[0]);
                     executeFunSingle(f.getInst(),funciones);
                 }
 
@@ -137,8 +134,9 @@ public class Main {
         }
     }
 
-    public static void executeFunSingle(ArrayList<String> operaciones, HashMap<String, Funcion> funciones){
+    public static String executeFunSingle(ArrayList<String> operaciones, HashMap<String, Funcion> funciones){
         ArrayList<String> operadoresA = new ArrayList<>();
+        String res = "";
         operadoresA.add("+");
         operadoresA.add("-");
         operadoresA.add("*");
@@ -155,14 +153,13 @@ public class Main {
 //            }
 //        }
 
-        System.out.println(funciones);
 
         for (int i = 0; i<operaciones.size();i++){
             //Busca de operadores
             if (operadoresA.contains(operaciones.get(i))){
                 String [] prueba = convertir(operaciones);
                 if (operaciones.size()>0){
-                    System.out.println(evaluarParentesis(prueba, funciones)[0]);
+                    res = Double.toString(evaluarParentesis(prueba, funciones)[0]);
                 }
             }
             //Busqueda de condicionales
@@ -171,29 +168,28 @@ public class Main {
             }
             //Busqueda de predicados
             else if(predicados.contains(operaciones.get(i).toUpperCase())){
-                System.out.println(evaluarPredicados(convertir(operaciones)));
+                res = (evaluarPredicados(convertir(operaciones)));
                 //TODO no esta del todo completo, creo que no es del todo recursivo
             }
             //Busqueda de llamadas de funciones
             else if (funciones.keySet().contains(operaciones.get(i))){
-                System.out.println("Encontramos una funcion en "+ (i+1));
                 Funcion f = funciones.get(operaciones.get(i));
                 ArrayList<String> params = new ArrayList<>();
                 int j = 3;
-                while (!operaciones.get(i).equals(")")){
-                    params.add(operaciones.get(i));
+                while (!operaciones.get(j).equals(")")){
+                    params.add(operaciones.get(j));
                     j++;
                 }
                 if (f.initParam(params)){
                     f.replaceParams();
-                    //System.out.println(evaluarParentesis(convertir(f.getInst()), funciones)[0]);
-                    executeFunSingle(f.getInst(),funciones);
+                    res = executeFunSingle(f.getInst(),funciones);
                 }
 
             }else{
                 //Si ninguna es True, no pasa nada
             }
         }
+        return res;
     }
 
     //Recibe de parametro un arraylist desde el (DEFUN...)
@@ -250,7 +246,6 @@ public class Main {
                 contador = (int) respuesta[1]+contador;
 
             }else if (set.contains(values[contador])) {
-                System.out.println("WENAS");
                 Funcion f = funciones.get(values[contador]);
                 if (values[contador+1].equals("(")){
                     contador = contador + 2;
@@ -271,7 +266,6 @@ public class Main {
         double res [] = new double [2];
         res [0] =r;
         res [1] = (double) contador;
-        //System.out.println(res[0]);
         return res;
     }
 

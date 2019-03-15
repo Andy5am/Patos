@@ -48,11 +48,12 @@ public class Funcion {
                 contador++;
             }
             return true;
-        }else if(params.size()<parametros.size()){
+        }else{/** if(params.size()<parametros.size()){
             System.out.println("ERROR - Falta de argumentos para la funcion '"+nombre+"'");
             return false;
         }else{
-            System.out.println("ERROR - Demasiados argumentos para la funcion '"+nombre+"'");
+            System.out.println(params.size());
+            System.out.println("ERROR - Demasiados argumentos para la funcion '"+nombre+"'");**/
             return false;
         }
     }
