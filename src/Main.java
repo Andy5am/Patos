@@ -4,6 +4,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
 
+/**
+ * @author Marco Fuentes 18188, Andy Castillo 18040, Cristina Bautista 161260
+ * @version 15/03/2019
+ * Clase del main, se encuentran varios metodos en esta clase tambien
+ */
 public class Main {
 
     public static void main (String [] args){
@@ -11,6 +16,7 @@ public class Main {
         String archivo = "prueba.txt";
         String cadena;
         String code = "";
+        //para leer el archivo
         try{
             FileReader f = new FileReader(archivo);
             BufferedReader b = new BufferedReader(f);
@@ -19,6 +25,7 @@ public class Main {
             }
             b.close();
 
+            //arraylist con todas las palabras importantes, para distinguirlas
             ArrayList<String> palabrasClave = new ArrayList<>();
             palabrasClave.add("ATOM");
             palabrasClave.add("LIST");
@@ -40,11 +47,18 @@ public class Main {
         }
     }
 
-    private static ArrayList<ArrayList<String>> splitInst (ArrayList<String> codigo){
+    /**
+     * @param codigo es el arraylist de lineas de codigo
+     * @return Un arraylist donde las instrucciones estan separadas
+     */
+    public static ArrayList<ArrayList<String>> splitInst (ArrayList<String> codigo){
+        //inst referencia a las instrucciones
         ArrayList<String> inst = new ArrayList<>();
+        //referencia a temporal
         ArrayList<ArrayList<String>> temp = new ArrayList<>();
         int parentesis = 0;
         String str = "";
+        //para recorrer toda la parte del string donde empieza y termina
         for (int i = 0; i<codigo.size(); i++){
             if (codigo.get(i).equals("(")){
                 parentesis++;
@@ -53,11 +67,13 @@ public class Main {
                 parentesis--;
                 if (parentesis==0){
                     str+= codigo.get(i);
+                    //se agrega instruccion al arraylist
                     inst.add(str);
                     str ="";
                 }else{
                     str+=codigo.get(i);
                 }
+                //espacios
             }else {
                 if (!codigo.get(i+1).equals("(")||!codigo.get(i+1).equals(")")||!codigo.get(i+1).equals("+")||!codigo.get(i+1).equals("-")||!codigo.get(i+1).equals("*")||!codigo.get(i+1).equals("/")){
                     str += " ";
@@ -65,6 +81,7 @@ public class Main {
                 str+= codigo.get(i);
             }
         }
+        //ya no habra espacios " " en el arraylist
         for (int a = 0; a<inst.size(); a++){
             ArrayList<String> ins = split(inst.get(a));
             temp.add(ins);
@@ -76,9 +93,10 @@ public class Main {
      * @param funciones Es el hashmap de Funciones del programa
      * @param operaciones  Es un ArrayList
      * Cada instruccion es del tipo (ALGO ASDKCI HOLA SALU2 (/ 5 9) HAHA)
-     * No permite que le manden operaciones o funciones de parametros a las llamadas de funciones
+     * Recibe un arraylist de un arraylist de strings
      */
     public static void executeFun(ArrayList<ArrayList<String>> operaciones, HashMap<String, Funcion> funciones){
+        //diferenciar entre operadores y predicados
         ArrayList<String> operadoresA = new ArrayList<>();
         operadoresA.add("+");
         operadoresA.add("-");
@@ -90,6 +108,7 @@ public class Main {
         predicados.add("LIST");
         predicados.add("EQUAL");
 
+        //si encuentra un defun entonces usa el metodo y hace lo correspondiente al metodo
         for (int i = 0; i<operaciones.size(); i++){
             if (operaciones.get(i).get(1).toUpperCase().equals("DEFUN")){
                 defun(operaciones.get(i), funciones);
@@ -107,7 +126,7 @@ public class Main {
             }
             //Busqueda de condicionales
             else if(operaciones.get(i).get(1).toUpperCase().equals("COND")){
-                //todo Parte de Andy
+                System.out.println(condicion(operaciones.get(i),funciones));
             }
             //Busqueda de predicados
             else if(predicados.contains(operaciones.get(i).get(1).toUpperCase())){
@@ -125,7 +144,7 @@ public class Main {
                 }
                 if (f.initParam(params)){
                     f.replaceParams();
-                    executeFunSingle(f.getInst(),funciones);
+                    System.out.println(executeFunSingle(f.getInst(),funciones));
                 }
 
             }else{
@@ -134,7 +153,14 @@ public class Main {
         }
     }
 
+    /**
+     * @param operaciones es una arraylist de Strings
+     * @param funciones es el hashmap de funciones del programa
+     * @return la respuesta
+     * En cambio este recibe solo un arraylist de strings y retorna la respuesta
+     */
     public static String executeFunSingle(ArrayList<String> operaciones, HashMap<String, Funcion> funciones){
+        //se vuelven a diferenciar entre operadores y predicados
         ArrayList<String> operadoresA = new ArrayList<>();
         String res = "";
         operadoresA.add("+");
@@ -164,7 +190,7 @@ public class Main {
             }
             //Busqueda de condicionales
             else if(operaciones.get(i).toUpperCase().equals("COND")){
-                //todo Parte de Andy
+                res = condicion(operaciones,funciones);
             }
             //Busqueda de predicados
             else if(predicados.contains(operaciones.get(i).toUpperCase())){
@@ -192,21 +218,30 @@ public class Main {
         return res;
     }
 
+    /**
+     * @param lista es un arraylist de string
+     * @param funciones es el hashmap de las funciones
+     * Metodo para que se interprete las definiciones de funciones de lisp
+     */
     //Recibe de parametro un arraylist desde el (DEFUN...)
     public static void defun (ArrayList<String> lista, HashMap<String, Funcion> funciones){
         int parentesis = 0;
         int c = 0;
+        //se instancia la clase funcion
         Funcion f = new Funcion();
         while (!lista.get(c).equals(")")){
             if (lista.get(c).equals("(")){
                 parentesis++;
+                //se agrega el nombre de la funcion
             }else if (parentesis == 1 && !lista.get(c).toUpperCase().equals("DEFUN") && !lista.get(c).toUpperCase().equals(")")){
                 f.setNombre(lista.get(c));
             }else if(parentesis == 2 && !lista.get(c).equals(")")){
+                //se van agregando los parametros
                 while (!lista.get(c).equals(")")){
                     f.addParam(lista.get(c));
                     c++;
                 }
+                //agrega instrucciones
             }else if (parentesis>2){
                 f.addInst("(");
                 int a = 0;
@@ -218,25 +253,33 @@ public class Main {
             }
             c++;
         }
+        //agrega al hash map
         funciones.put(f.getNombre(), f);
     }
 
     /**
      * @param values Es la matriz que contiene los elementos dentro del parentesis
      * @return En la primera posicion, el resultado de la operacion aritmetica. En el segundo, el contador interno
+     * Este metodo las operaciones aritmeticas guarda los operandos y operandores por parentesis
      */
-    private static double[] evaluarParentesis(String [] values, HashMap<String, Funcion> funciones){
+    public static double[] evaluarParentesis(String [] values, HashMap<String, Funcion> funciones){
+        //del hashmap
         Set set = funciones.keySet();
         String op = "";
+        //valores
         ArrayList<Double> val = new ArrayList<>();
         double r = 0;
         int contador = 1;
+        //mientras no termine un parentesis
         while (!values [contador].equals(")")) {
             if (esNum(values[contador])){
                 val.add(Double.parseDouble(values[contador]));
+                //los operandos
             }else if (values[contador].equals("+") || values[contador].equals("-") || values[contador].equals("*") || values[contador].equals("/")){
                 op = values[contador];
+                //cuando empieza un parentesis
             }else if (values[contador].equals("(")){
+                //matriz nueva
                 String val0[] = new String[values.length-(contador+1)];
                 for (int c  = contador;c<values.length-1;c++){
                     val0[c-(contador)] = values[c];
@@ -269,7 +312,12 @@ public class Main {
         return res;
     }
 
-    private static Boolean esNum(String n){
+    /**
+     * @param n String
+     * @return Retorna un booleano de true o false que se utiliza en evaluarParentesis
+     * Para saber si donde estan los operadores que se utilizan en el metodo de evaluarParentesis
+     */
+    public static Boolean esNum(String n){
         boolean b;
         try{
             Double.parseDouble(n);
@@ -280,8 +328,17 @@ public class Main {
         return b;
     }
 
-    private static double operacionAritmetica(String op, ArrayList<Double> num){
+    /**
+     * @param op es el operador
+     * @param num es el numero
+     * @return el valor de la operacion
+     * Esta hace las operaciones que estan puestas en formato lisp y retorna el resultado de esa
+     * operacion aritmetica
+     */
+    public static double operacionAritmetica(String op, ArrayList<Double> num){
+        //tipo double mas precision que un float
         double res = num.get(0);
+        //para los 4 operadores que se pueden usar
         switch (op) {
             case "+":
                 for (int i = 1; i < num.size(); i++) {
@@ -298,6 +355,7 @@ public class Main {
                     res = res * num.get(i);
                 }
                 break;
+            //precaucion con la division entre cero
             case "/":
                 if (num.get(num.size() - 1) == 0) {
                     //Error - Division entre 0
@@ -309,17 +367,27 @@ public class Main {
                 }
                 break;
         }
+        //retorna el double, resultado de la operacion
         return res;
     }
 
-    private static ArrayList<String> split (String s){
+    /**
+     * @param s es un string
+     * @return un arraylist de strings
+     * Este metodo es para quitar los espacios
+     */
+    public static ArrayList<String> split (String s){
+        //nueva arraylist
         ArrayList<String> str = new ArrayList<>();
+        //para que siempre este en mayuscula
         s=s.toUpperCase();
+        //matriz de strings
         String[] matriz = s.split("");
         //for (int i = 0 ; i< s.length(); i++)
         for(int i = 0; i<s.length();i++){
 
             if (matriz[i].equals("'") || matriz[i].equals("(") ||matriz[i].equals(")") ||matriz[i].equals("+") ||matriz[i].equals("-") ||matriz[i].equals("*") ||matriz[i].equals("/")){
+                //se agrega al arraylist de strings
                 str.add(matriz[i]);
             }else if(!matriz[i].equals(" ")){
                 Boolean continuar = true;
@@ -332,24 +400,36 @@ public class Main {
                         continuar = false;
                     }
                 }
+                //al arraylist se le agrega un String
                 str.add(st);
                 i+=contador-1;
             }
 
         }
+        //el arraylist de strings
         return str;
     }
 
-    private static String[] convertir (ArrayList<String> vals){
+    /**
+     * @param vals un arraylist de strings
+     * @return una matriz de strings
+     * Se utiliza en executeFun, executeFunSingle y evaluarParentesis
+     */
+    public static String[] convertir (ArrayList<String> vals){
         String st = "";
         for (int a = 0; a<vals.size(); a++){
             st+= vals.get(a)+",";
         }
+        //en la comilla se hace split
         String [] values = st.split(",");
-
+        //matriz de strings
         return values;
     }
 
+    /**
+     * @param matriz es una matriz de String
+     * @return un t o nil. t si es un predicado y nil si no es un predicado
+     */
     public static String evaluarPredicados(String[] matriz){
         //TODO recursividad
         ArrayList<String> operadoresA = new ArrayList<>();
@@ -359,7 +439,10 @@ public class Main {
         operadoresA.add("/");
         int i = 1;
         String str = "";
+        //para que este toda esta parte en mayusculas
+        //cada uno de los case es cada una de las formas de evaluar si es predicado en lisp
         switch (matriz[i].toUpperCase()) {
+            //forma de evaluar atom
             case "ATOM":
                 if (!matriz[i+2].equals(")")){
                     if (matriz[i+2].equals("+")||matriz[i+2].equals("-")||matriz[i+2].equals("*")||matriz[i+2].equals("/")){
@@ -374,6 +457,7 @@ public class Main {
                 }else {
                     return "T";
                 }
+                //forma de evaluar list
             case "LIST":
                 if (matriz[i+1].equals("(") && matriz[i+2].equals("'")){
                     return "T";
@@ -382,6 +466,7 @@ public class Main {
                 }else{
                     return "nil";
                 }
+                //forma de evaluar equal
             case "EQUAL":
                 try{
                     if (matriz[i+1].equals(matriz[i+2])){
@@ -392,8 +477,10 @@ public class Main {
                 }catch(Exception e){
                     return "nil";
                 }
+                //forma de evaluar menor que
             case "<":
                 ArrayList<Double> numeros = new ArrayList<Double>();
+                //Tiene que soportar que le metan funciones, operaciones o numeros
                 try{
                     //Tiene que soportar que le metan funciones, operaciones o numeros
                     if(matriz[i+1].equals("(") && operadoresA.contains(matriz[i+2])){
@@ -429,4 +516,82 @@ public class Main {
         }
     }
 
+    /**
+     * @param inst es un arraylist de instrucciones
+     * @param funciones hashmap de las funciones del programa
+     * @return Un string
+     * Evalua las condiciones en las instrucciones de lisp
+     */
+    public static String condicion (ArrayList<String> inst,HashMap<String,Funcion> funciones){
+        int contador = 0;
+        //arraylist de condiciones
+        ArrayList<String > condiciones = new ArrayList<>();
+        //arraylist de acciones
+        ArrayList<String> acciones = new ArrayList<>();
+        String cond = "";
+        String accion = "";
+        Boolean condicion = false;
+        Boolean act = false;
+        for (int i = 0;i<inst.size();i++){
+            if (inst.get(i).equals("(")){
+                if (inst.get(i+1).equals("(")){
+                    condicion = true;
+                    contador = i+1;
+                    //anadir la condicion
+                    while (condicion){
+
+                        if (!inst.get(contador).equals(")") && !inst.get(contador+1).equals("(")){
+                            cond+= inst.get(contador)+",";
+                            contador++;
+                        }else {
+                            cond+= inst.get(contador);
+                            condiciones.add(cond);
+                            cond= "";
+                            condicion= false;
+                            i = contador;
+                        }
+                    }
+                }
+            }
+            //evaluar opciones
+            if (i+1!= inst.size()) {
+                if (inst.get(i).equals(")")) {
+                    if (inst.get(i + 1).equals("(")) {
+                        act = true;
+                        contador = i + 1;
+                        while (act) {
+                            if (inst.get(contador).equals(")") && inst.get(contador + 1).equals(")")) {
+                                accion += inst.get(contador + 1)+",";
+                                acciones.add(accion);
+                                accion ="";
+                                act = false;
+                                i = contador +1;
+
+                            } else {
+                                accion += inst.get(contador)+",";
+                                contador++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+            //ejecutar cada condicion
+        for (int a = 0; a< condiciones.size(); a++){
+         String eval = "";
+            ArrayList codi = new ArrayList();
+            String[] matriz = condiciones.get(a).split(",");
+            if (evaluarPredicados(matriz).equals("T")){
+                String[] mat = acciones.get(a).split(",");
+                ArrayList action = new ArrayList();
+                for ( int b = 0; b<mat.length; b++){
+                    action.add(mat[b]);
+                }
+                eval = executeFunSingle(action,funciones);
+                return eval;
+            }
+         }
+        return "No se cumplio ninguna condicion";
+
+    }
 }

@@ -6,17 +6,17 @@
     ((ATOM (List 8 2)) 5)
     ((ATOM 1) 6)
 ))
-(DEFUN terceraprueba (seguimos con complejidad)
+(DEFUN terceraprueba (seguimos con complejidad) 
     (EQUAL
         (EQUAL
-            (cond
+            (cond 
                 ((< seguimos 2) (SEGUNDAPRUEBA (1 2 3)))
             )
-            (cond
+            (cond 
                 ((> CON SEGUIMOS) (SEGUNDAPRUEBA (1 2 3)))
             )
         )
-        (EQUAL
+        (EQUAL 
             (+ 20 30 50)
             (* 100 (/ 20 20))
         )
